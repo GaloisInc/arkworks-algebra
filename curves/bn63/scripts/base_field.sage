@@ -5,7 +5,7 @@ assert(modulus.is_prime())
 Fp = GF(modulus)
 
 generator = Fp(0);
-for i in range(0, 20):
+for i in range(0, 27):
     i = Fp(i);
     neg_i = Fp(-i)
     if not(i.is_primitive_root() or neg_i.is_primitive_root()):
@@ -20,7 +20,6 @@ for i in range(0, 20):
         print("Generator: %d" % neg_i)
         generator = neg_i
         break
-
 
 two_adicity = valuation(modulus - 1, 2);
 trace = (modulus - 1) / 2**two_adicity;
