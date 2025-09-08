@@ -28,8 +28,8 @@ impl SWCurveConfig for Config {
     /// COEFF_A = 0
     const COEFF_A: Fq = Fq::ZERO;
 
-    /// COEFF_B = 3
-    const COEFF_B: Fq = MontFp!("99");
+    /// COEFF_B = 29
+    const COEFF_B: Fq = MontFp!("29");
 
     /// AFFINE_GENERATOR_COEFFS = (G1_GENERATOR_X, G1_GENERATOR_Y)
     const GENERATOR: G1Affine = G1Affine::new_unchecked(G1_GENERATOR_X, G1_GENERATOR_Y);
@@ -83,4 +83,4 @@ impl GLVConfig for Config {
 pub const G1_GENERATOR_X: Fq = Fq::ONE;
 
 /// G1_GENERATOR_Y = 2
-pub const G1_GENERATOR_Y: Fq = MontFp!("9176312775253704374");
+pub const G1_GENERATOR_Y: Fq = MontFp!("797827305096416164");
