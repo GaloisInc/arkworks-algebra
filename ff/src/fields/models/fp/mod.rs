@@ -329,6 +329,7 @@ impl<P: FpConfig<N>, const N: usize> Field for Fp<P, N> {
 
     #[inline]
     fn legendre(&self) -> LegendreSymbol {
+        panic!("legendre");
         use crate::fields::LegendreSymbol::*;
 
         // s = self^((MODULUS - 1) // 2)

@@ -36,6 +36,7 @@ impl SWCurveConfig for Config {
 
     #[inline(always)]
     fn mul_by_a(_: Self::BaseField) -> Self::BaseField {
+        panic!("mul_by_a");
         Self::BaseField::zero()
     }
 
@@ -44,12 +45,14 @@ impl SWCurveConfig for Config {
         p: &bn::G1Projective<crate::Config>,
         scalar: &[u64],
     ) -> bn::G1Projective<crate::Config> {
+        panic!("mul_projective");
         let s = Self::ScalarField::from_sign_and_limbs(true, scalar);
         GLVConfig::glv_mul_projective(*p, s)
     }
 
     #[inline]
     fn is_in_correct_subgroup_assuming_on_curve(_p: &G1Affine) -> bool {
+        panic!("is_in_correct_subgroup_assuming_on_curve");
         // G1 = E(Fq) so if the point is on the curve, it is also in the subgroup.
         true
     }
@@ -68,11 +71,13 @@ impl GLVConfig for Config {
     ];
 
     fn endomorphism(p: &Projective<Self>) -> Projective<Self> {
+        panic!("endomorphism");
         let mut res = (*p).clone();
         res.x *= Self::ENDO_COEFFS[0];
         res
     }
     fn endomorphism_affine(p: &Affine<Self>) -> Affine<Self> {
+        panic!("endomorphism_affine");
         let mut res = (*p).clone();
         res.x *= Self::ENDO_COEFFS[0];
         res
