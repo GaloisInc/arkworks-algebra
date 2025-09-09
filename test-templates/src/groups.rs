@@ -79,26 +79,26 @@ macro_rules! __test_group {
             let mut rng = test_rng();
             let zero = ScalarField::zero();
             let one = ScalarField::one();
-            assert_eq!(one.inverse().unwrap(), one);
-            assert!(one.is_one());
+            assert_eq!(one.inverse().unwrap(), one, "1^-1 != 1");
+            assert!(one.is_one(), "one() != 1");
 
             for _ in 0..ITERATIONS {
                 // Associativity
                 let a = <$group>::rand(&mut rng);
                 let b = ScalarField::rand(&mut rng);
                 let c = ScalarField::rand(&mut rng);
-                assert_eq!((a * b) * c, a * (b * c));
+                assert_eq!((a * b) * c, a * (b * c), "Associativity:\na = {a}\nb = {b}\nc = {c}");
 
                 // Identity
-                assert_eq!(a * one, a);
+                assert_eq!(a * one, a, "Identity");
 
-                assert_eq!(a * zero, <$group>::zero());
+                assert_eq!(a * zero, <$group>::zero(), "Zero");
 
                 // Inverses
-                assert_eq!((a * b.inverse().unwrap()) * b, a);
+                assert_eq!((a * b.inverse().unwrap()) * b, a, "Inverse");
 
                 // Distributivity
-                assert_eq!(a * (b + c), a * b + a * c);
+                assert_eq!(a * (b + c), a * b + a * c, "Distributivity");
 
                 // s ( a + b) using wNAF for several window values in [2,5]
                 for w in 2..=5 {
