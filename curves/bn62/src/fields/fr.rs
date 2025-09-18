@@ -15,15 +15,15 @@ impl MontConfig<1usize> for FrConfig {
     };
     #[inline(always)]
     fn add_assign(a: &mut F, b: &F) {
-        __add_with_carry(&mut a.0, &b.0);
+        __add_with_carry(&mut (a.0).0[0], (b.0).0[0]);
         __subtract_modulus(a);
     }
     #[inline(always)]
     fn sub_assign(a: &mut F, b: &F) {
         if b.0 > a.0 {
-            __add_with_carry(&mut a.0, &BigInt([3866540040962951063u64]));
+            __add_with_carry(&mut (a.0).0[0], 3866540040962951063u64);
         }
-        __sub_with_borrow(&mut a.0, &b.0);
+        __sub_with_borrow(&mut (a.0).0[0], (b.0).0[0]);
     }
     #[inline(always)]
     fn double_in_place(a: &mut F) {
@@ -34,9 +34,9 @@ impl MontConfig<1usize> for FrConfig {
     #[inline(always)]
     fn neg_in_place(a: &mut F) {
         if *a != F::ZERO {
-            let mut tmp = BigInt([3866540040962951063u64]);
-            __sub_with_borrow(&mut tmp, &a.0);
-            a.0 = tmp;
+            let mut tmp = 3866540040962951063u64;
+            __sub_with_borrow(&mut tmp, (a.0).0[0]);
+            (a.0).0[0] = tmp;
         }
     }
     #[inline(always)]
@@ -118,11 +118,11 @@ impl MontConfig<1usize> for FrConfig {
 #[inline(always)]
 fn __subtract_modulus(a: &mut F) {
     if a.is_geq_modulus() {
-        __sub_with_borrow(&mut a.0, &BigInt([3866540040962951063u64]));
+        __sub_with_borrow(&mut (a.0).0[0], 3866540040962951063u64);
     }
 }
 #[inline(always)]
-fn __add_with_carry(a: &mut B, b: &B) {
+fn __add_with_carry(a: &mut u64, b: u64) {
     // use ark_ff::biginteger::arithmetic::adc_for_add_with_carry as adc;
     // let mut carry = 0;
     // adc(&mut a.0[0usize], b.0[0usize], carry);
@@ -131,17 +131,17 @@ fn __add_with_carry(a: &mut B, b: &B) {
     #[allow(unsafe_code)]
     unsafe {
         use core::arch::x86_64::_addcarry_u64;
-        _addcarry_u64(carry, a.0[0usize], b.0[0usize], a.0[0usize]);
+        _addcarry_u64(carry, a, b, a);
     }
     #[cfg(not(all(target_arch = "x86_64", feature = "asm")))]
     {
-        let tmp = (a.0[0usize]) as u128 + (b.0[0usize]) as u128;
-        a.0[0usize] = tmp as u64;
+        let tmp = *(a) as u128 + (b) as u128;
+        *a = tmp as u64;
     }
 }
 
 #[inline(always)]
-fn __sub_with_borrow(a: &mut B, b: &B) {
+fn __sub_with_borrow(a: &mut u64, b: u64) {
     // use ark_ff::biginteger::arithmetic::sbb_for_sub_with_borrow as sbb;
     // let mut borrow = 0;
     // borrow = sbb(&mut a.0[0usize], b.0[0usize], borrow);
@@ -151,12 +151,12 @@ fn __sub_with_borrow(a: &mut B, b: &B) {
     #[allow(unsafe_code)]
     unsafe {
         use core::arch::x86_64::_subborrow_u64;
-        _subborrow_u64(borrow, a.0[0usize], b.0[0usize], a.0[0usize]);
+        _subborrow_u64(borrow, a, b, a);
     }
     #[cfg(not(all(target_arch = "x86_64", feature = "asm")))]
     {
-        let tmp = (1u128 << 64) + ((a.0[0usize]) as u128) - ((b.0[0usize]) as u128);
-        (a.0[0usize]) = tmp as u64;
+        let tmp = (1u128 << 64) + (*(a) as u128) - ((b) as u128);
+        *(a) = tmp as u64;
     }
 }
 
